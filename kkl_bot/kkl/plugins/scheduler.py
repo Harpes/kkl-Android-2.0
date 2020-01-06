@@ -3,10 +3,12 @@ from datetime import datetime
 import nonebot
 
 bot = nonebot.get_bot()
-#使用计划任务模块之前请在命令行执行pip install nonebot[scheduler]
-#可自行添加不发送定时消息的群列表
+# 使用计划任务模块之前请在命令行执行pip install nonebot[scheduler]
+# 可自行添加不发送定时消息的群列表
 
-@nonebot.scheduler.scheduled_job('cron', hour='14', minute='50', second='0', misfire_grace_time=60) # = UTC+8 1445
+
+# = UTC+8 1450
+@nonebot.scheduler.scheduled_job('cron', hour='14', minute='50', second='0', misfire_grace_time=60)
 async def pcr_reminder():
     try:
         group_list = await bot.get_group_list()
@@ -18,7 +20,8 @@ async def pcr_reminder():
         pass
 
 
-@nonebot.scheduler.scheduled_job('cron', hour='8', minute='0', second='0', misfire_grace_time=60) # = UTC+8 1445
+# = UTC+8 0800
+@nonebot.scheduler.scheduled_job('cron', hour='8', minute='0', second='0', misfire_grace_time=60)
 async def alarm():
     try:
         group_list = await bot.get_group_list()
@@ -29,7 +32,9 @@ async def alarm():
     except:
         pass
 
-@nonebot.scheduler.scheduled_job('cron', hour='23', minute='0', second='0', misfire_grace_time=60) # = UTC+8 1445
+
+# = UTC+8 2300
+@nonebot.scheduler.scheduled_job('cron', hour='23', minute='0', second='0', misfire_grace_time=60)
 async def need_sleep():
     try:
         group_list = await bot.get_group_list()
@@ -39,4 +44,3 @@ async def need_sleep():
             await bot.send_group_msg(group_id=group, message=msg)
     except:
         pass
-

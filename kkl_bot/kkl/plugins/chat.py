@@ -118,8 +118,8 @@ async def group_ban(context):
                     p = 'CQ:at,qq=(\\d+)]'
                     qq = int(re.search(p, f_message).group(1))
                     if f_user_id not in f_manager and qq not in f_manager:
-                        bantime = randint(120, 480)
-                        await bot.set_group_ban(group_id=f_group_id, user_id=f_user_id, duration=bantime + randint(-60, 180))
+                        bantime = randint(150, 480)
+                        await bot.set_group_ban(group_id=f_group_id, user_id=f_user_id, duration=bantime + randint(-120, 60))
                         await bot.set_group_ban(group_id=f_group_id, user_id=qq, duration=bantime)
                         await bot.send_group_msg(group_id=f_group_id, message=f'恭喜[CQ:at,qq={f_user_id}]成功带动了[CQ:at,qq={qq}]的经济发展')
                     elif f_user_id not in f_manager and qq in f_manager:
@@ -145,11 +145,17 @@ async def group_ban(context):
                 await bot.send_group_msg(group_id=f_group_id, message=f'[CQ:at,qq={f_user_id}] 晚安，骑士君~')
         elif '妈' in f_message:
             f = True
+            if len(f_message) > 4:
+                f = False
             for i in ['狗', '你', '的', '他', '草', '呀', '查询']:
                 if i in f_message:
                     f = False
             if f:
                 await bot.send_group_msg(group_id=f_group_id, message=f'[CQ:at,qq={f_user_id}] ？')
+        else:
+            if_repeat = randint(0, 100)
+            if if_repeat < 4:
+                await bot.send_group_msg(group_id=f_group_id, message=f_message)
     except:
         pass
 

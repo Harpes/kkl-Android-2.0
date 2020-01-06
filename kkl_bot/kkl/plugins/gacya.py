@@ -1,4 +1,3 @@
-# -*- coding:utf-8 -*-
 from nonebot import on_command, CommandSession, permission as perm
 import nonebot
 import random as rd
@@ -38,9 +37,38 @@ background = Image.new('RGBA', (330, 135), color='lavenderblush')
 ordinary = [0.7, 1.8, 20.5, 77]  # 普通
 double = [1.4, 3.6, 18, 77]  # 双倍
 
-# gacya
-@on_command('gacya10', aliases=('十连抽',), only_to_me=False)  # changed
-async def gacya(session: CommandSession):
+
+@on_command('onegacya', aliases=('单抽', ), only_to_me=False)
+async def onegacya(session: CommandSession):
+    gacya_3, p = gacya3, ordinary
+    msg = ''
+    if session.ctx['message_type'] == 'group':
+        msg = '[CQ:at,qq={}] '.format(str(session.ctx['user_id']))
+
+    if fes == '1':
+        p = double
+        gacya_3 += fesgacya
+    elif isdouble == '1':
+        p = double
+
+    sup, s3, s2 = 100-p[0], 100-p[0]-p[1], p[3]
+    pic = ''
+    i = rd.random() * 100
+    if i >= sup:  # up
+        pic = rd.choice(up)
+    elif i >= s3 and i < sup:  # 3星
+        pic = rd.choice(gacya_3)
+    elif i >= s2 and i < s3:  # 2星
+        pic = rd.choice(gacya2)
+    else:  # 1星
+        pic = rd.choice(gacya1)
+    
+    pic = f'[CQ:image,file=file:///{root}\\{pic}.png]'
+
+    await session.send(msg + pic)
+
+@on_command('gacya10', aliases=('十连抽', ), only_to_me=False)
+async def gacya10(session: CommandSession):
     gacya_3 = gacya3
     result = []
     msg = ''
@@ -51,23 +79,32 @@ async def gacya(session: CommandSession):
     elif isdouble == '1':
         p = double
     sup, s3, s2 = 100-p[0], 100-p[0]-p[1], p[3]
-    print(gacya_3)
-    
+    n3, n2, n1 = [0, 0, 0]
+    stones = [50, 10, 1]
+
     if session.ctx['message_type'] == 'group':
-        msg = '[CQ:at,qq={}]\n'.format(str(session.ctx['user_id']))
-    
-    for n in range(9):
-        i = rd.random()*100
+        msg = '[CQ:at,qq={}] '.format(str(session.ctx['user_id']))
+
+    for x in range(10):
+        i = rd.random() * 100
         if i >= sup:  # up
             result.append(rd.choice(up))
+            n3 += 1
         elif i >= s3 and i < sup:  # 3星
             result.append(rd.choice(gacya_3))
+            n3 += 1
         elif i >= s2 and i < s3:  # 2星
             result.append(rd.choice(gacya2))
+            n2 += 1
         else:  # 1星
-            result.append(rd.choice(gacya1))
-    result.append(rd.choice(gacya2)) if (rd.random()*100 <
-                                         s3) else result.append(rd.choice(gacya_3+up))
+            if x == 9:
+                result.append(rd.choice(gacya2))
+                n2 += 1
+            else:
+                result.append(rd.choice(gacya1))
+                n1 += 1
+
+    msg += f'共计{n3 * stones[0] + n2 * stones[1] + n1 * stones[2]}个无名之石'
 
     name = session.ctx['user_id']
     a = 0
@@ -76,12 +113,12 @@ async def gacya(session: CommandSession):
             pic = Image.open(result[a] + '.png')
             background.paste(pic, (x*65+5, y*65+5))
             a += 1
+    background.save(root + f'\\out\\{name}.png')
 
-    background.save(root+f'\\out\\{name}.png')
-    await session.send(msg+f'[CQ:image,file=file:///{root}\\out\\{name}.png]')
+    await session.send(msg + f'[CQ:image,file=file:///{root}\\out\\{name}.png]')
 
 
-@on_command('set_gacya', aliases=('卡池设置',), only_to_me=False)
+@on_command('set_gacya', aliases=('卡池设置', ), only_to_me=False)
 async def set_gacya(session: CommandSession):
     global fes, isdouble
     if master == session.ctx['user_id']:

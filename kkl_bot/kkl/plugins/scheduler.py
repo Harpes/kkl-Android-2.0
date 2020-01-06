@@ -12,7 +12,7 @@ bot = nonebot.get_bot()
 async def pcr_reminder():
     try:
         group_list = await bot.get_group_list()
-        msg = '背刺Time背刺Time背刺Time背刺Time背刺Time!!!'
+        msg = '背刺Time背刺Time背刺Time背刺Time背刺Time!!!\n大家记得背刺群主'
         groups = [group['group_id'] for group in group_list]
         for group in groups:
             await bot.send_group_msg(group_id=group, message=msg)

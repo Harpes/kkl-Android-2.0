@@ -21,14 +21,13 @@ charactersName = [
 ]
 
 i, x = 0, 0
-while x < width - 60:
+while x < height - 60:
     j, y = 0, 0
-    while y < height - 60:
+    while y < width - 60:
         fileName = f'{i}-{j}'
         if charactersName[j] and charactersName[j][i]:
             fileName = charactersName[j][i]
 
-        print(i, j, fileName)
         newImg = img.crop((x, y, x + 60, y + 60))
         newImg.save('./' + fileName + '.png')
 

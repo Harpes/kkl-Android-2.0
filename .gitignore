@@ -1,2 +1,3 @@
-﻿*.pyc
+*.pyc
 kkl_bot/kkl/plugins/plus/image/out
+.DS_Store

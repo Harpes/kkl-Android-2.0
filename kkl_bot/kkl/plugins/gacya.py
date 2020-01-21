@@ -28,36 +28,40 @@ gacya2 = ['茉莉', '茜里', '宮子',
 
 gacya1 = ['日和', '怜', '禊', '胡桃', '依里', '鈴莓', '優花梨', '碧', '美咲', '莉瑪', '步未']
 
-fesgacya = ['矛依未', '克莉絲提娜']
+gacyaFes = ['矛依未', '克莉絲提娜']
 
-up = ['ネネカ']
+gacyaUp = ['ネネカ']
 
-background = Image.new('RGBA', (330, 135), color='lavenderblush')
-# up,3星,2星,1星
-# ordinary = [0.7, 1.8, 20.5, 77]  # 普通
-# ordinary = [1.4, 3.6, 18, 77]  # up双倍
-ordinary = [0.7, 4.3, 18, 77]  # 三星双倍
+stones = [50, 10, 1]
+
+# up, FES, 3星, 2星
+# percents = [0.7, 0, 1.8, 20.5]  # 普通
+# percents = [1.4, 0, 3.6, 18]  # up双倍
+percents = [0.7, 0.6, 4.3, 18]  # FES三星双倍
+
+pUp = percents[0]
+pFes = pUp + percents[1]
+p3 = pFes + percents[2]
+p2 = p3 + percents[3]
 
 
 @on_command('onegacya', aliases=('单抽', ), only_to_me=False)
 async def onegacya(session: CommandSession):
-    gacya_3, p = gacya3, ordinary
-    gacya_3 += fesgacya
-
     msg = ''
     if session.ctx['message_type'] == 'group':
         msg = '[CQ:at,qq={}] '.format(str(session.ctx['user_id']))
 
-    sup, s3, s2 = 100-p[0], 100-p[0]-p[1], p[3]
     pic = ''
     i = rd.random() * 100
-    if i >= sup:  # up
-        pic = rd.choice(up)
-    elif i >= s3 and i < sup:  # 3星
-        pic = rd.choice(gacya_3)
-    elif i >= s2 and i < s3:  # 2星
+    if i <= pUp:
+        pic = rd.choice(gacyaUp)
+    elif i <= pFes:
+        pic = rd.choice(gacyaFes)
+    elif i <= p3:
+        pic = rd.choice(gacya3)
+    elif i <= p2:
         pic = rd.choice(gacya2)
-    else:  # 1星
+    else:
         pic = rd.choice(gacya1)
 
     pic = f'[CQ:image,file=file:///{root}\\{pic}.png]'
@@ -67,32 +71,30 @@ async def onegacya(session: CommandSession):
 
 @on_command('gacya10', aliases=('十连抽', ), only_to_me=False)
 async def gacya10(session: CommandSession):
-    gacya_3 = gacya3
-    gacya_3 += fesgacya
-
     result = []
-    msg = ''
-    p = ordinary
-
-    sup, s3, s2 = 100-p[0], 100-p[0]-p[1], p[3]
     n3, n2, n1 = [0, 0, 0]
-    stones = [50, 10, 1]
 
+    msg = ''
     if session.ctx['message_type'] == 'group':
-        msg = '[CQ:at,qq={}] '.format(str(session.ctx['user_id']))
+        context = session.ctx
+        await bot.set_group_ban(group_id=context['group_id'], user_id=context['user_id'], duration=30)
+        msg = '[CQ:at,qq={}] '.format(str(context['user_id']))
 
     for x in range(10):
         i = rd.random() * 100
-        if i >= sup:  # up
-            result.append(rd.choice(up))
+        if i <= pUp:
+            result.append(rd.choice(gacyaUp))
             n3 += 1
-        elif i >= s3 and i < sup:  # 3星
-            result.append(rd.choice(gacya_3))
+        elif i <= pFes:
+            result.append(rd.choice(gacyaFes))
             n3 += 1
-        elif i >= s2 and i < s3:  # 2星
+        elif i <= p3:
+            result.append(rd.choice(gacya3))
+            n3 += 1
+        elif i <= p2:
             result.append(rd.choice(gacya2))
             n2 += 1
-        else:  # 1星
+        else:
             if x == 9:
                 result.append(rd.choice(gacya2))
                 n2 += 1
@@ -100,14 +102,15 @@ async def gacya10(session: CommandSession):
                 result.append(rd.choice(gacya1))
                 n1 += 1
 
-    msg += f'共计{n3 * stones[0] + n2 * stones[1] + n1 * stones[2]}个无名之石'
+    msg += f'获得{n3 * stones[0] + n2 * stones[1] + n1 * stones[2]}个无名之石'
 
+    background = Image.new('RGBA', (312, 126), color='lavenderblush')
     name = session.ctx['user_id']
     a = 0
     for x in range(5):
         for y in range(2):
             pic = Image.open(result[a] + '.png')
-            background.paste(pic, (x*65+5, y*65+5))
+            background.paste(pic, (x * 62 + 2, y * 62 + 2))
             a += 1
     background.save(root + f'\\out\\{name}.png')
 
@@ -116,49 +119,43 @@ async def gacya10(session: CommandSession):
 
 @on_command('gacya300', aliases=('抽一井', ), only_to_me=False)
 async def gacya300(session: CommandSession):
-    gacya_3 = gacya3
-    gacya_3 += fesgacya
-
     result = []
-    msg = ''
-    p = ordinary
-
-    sup, s3, s2 = 100-p[0], 100-p[0]-p[1], p[3]
     n3, n2, n1 = [0, 0, 0]
-    stones = [50, 10, 1]
 
+    msg = ''
     if session.ctx['message_type'] == 'group':
-        msg = '[CQ:at,qq={}] '.format(str(session.ctx['user_id']))
+        context = session.ctx
+        await bot.set_group_ban(group_id=context['group_id'], user_id=context['user_id'], duration=40)
+        msg = '[CQ:at,qq={}] '.format(str(context['user_id']))
 
     for i in range(30):
         for x in range(10):
             i = rd.random() * 100
-            if i >= sup:  # up
-                result.append(rd.choice(up))
+            if i <= pUp:
+                result.append(rd.choice(gacyaUp))
                 n3 += 1
-            elif i >= s3 and i < sup:  # 3星
-                result.append(rd.choice(gacya_3))
+            elif i <= pFes:
+                result.append(rd.choice(gacyaFes))
                 n3 += 1
-            elif i >= s2 and i < s3:  # 2星
-                # result.append(rd.choice(gacya2))
+            elif i <= p3:
+                result.append(rd.choice(gacya3))
+                n3 += 1
+            elif i <= p2:
                 n2 += 1
-            else:  # 1星
+            else:
                 if x == 9:
-                    # result.append(rd.choice(gacya2))
                     n2 += 1
                 else:
-                    # result.append(rd.choice(gacya1))
                     n1 += 1
 
     msg += f'获得{n3 * stones[0] + n2 * stones[1] + n1 * stones[2]}个无名之石'
 
     name = session.ctx['user_id']
     a = 0
-    newPic = Image.new('RGBA', (n3 * 65 + 5, 70), color='lavenderblush')
-
+    newPic = Image.new('RGBA', (n3 * 62 + 2, 64), color='lavenderblush')
     for x in range(n3):
         pic = Image.open(result[x] + '.png')
-        newPic.paste(pic, (x * 65 + 5, 5))
+        newPic.paste(pic, (x * 62 + 2, 2))
     newPic.save(root + f'\\out\\{name}.png')
     msg += f'[CQ:image,file=file:///{root}\\out\\{name}.png]'
 

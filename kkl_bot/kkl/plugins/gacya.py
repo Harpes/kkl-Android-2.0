@@ -15,7 +15,7 @@ gacya3 = ['杏奈', '真步', '璃乃',
           '伊莉亞', '純', '靜流',
           '莫妮卡', '流夏', '吉塔',
           '亞里莎', '安', '古蕾婭',
-          '空花（大江戶）', '妮諾（大江戶）']
+          '空花（大江戶）', '妮諾（大江戶）', '碧（插班生）']
 
 gacya2 = ['茉莉', '茜里', '宮子',
           '雪', '七七香', '美里',
@@ -29,7 +29,7 @@ gacya1 = ['日和', '怜', '禊', '胡桃', '依里', '鈴莓', '優花梨', '�
 
 fesgacya = ['矛依未', '克莉絲提娜']
 
-up = ['碧（插班生）']
+up = ['克蘿依']
 fes = '0'
 isdouble = '0'
 background = Image.new('RGBA', (330, 135), color='lavenderblush')
@@ -62,10 +62,11 @@ async def onegacya(session: CommandSession):
         pic = rd.choice(gacya2)
     else:  # 1星
         pic = rd.choice(gacya1)
-    
+
     pic = f'[CQ:image,file=file:///{root}\\{pic}.png]'
 
     await session.send(msg + pic)
+
 
 @on_command('gacya10', aliases=('十连抽', ), only_to_me=False)
 async def gacya10(session: CommandSession):
